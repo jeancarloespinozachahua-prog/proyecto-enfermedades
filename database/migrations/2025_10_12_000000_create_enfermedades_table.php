@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nombre'); // Nombre de la enfermedad
             $table->text('descripcion'); // Descripción detallada
             $table->timestamps(); // Campos created_at y updated_at
+           
+
         });
     }
 

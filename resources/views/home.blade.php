@@ -25,50 +25,61 @@
       text-align: center;
     }
 
-    p, ul {
-      font-size: 1.2em;
-      animation: fadeIn 1.2s ease-in;
-    }
-
-    ul {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
-
-    li {
-      margin-bottom: 8px;
-      list-style: "🌠 ";
-    }
-
-    .menu {
-      margin-top: 30px;
+    .contenido-central {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: 40px;
     }
 
-    .menu a {
-      padding: 12px 20px;
-      background: #1d1a40ff;
+    .contenido-central p {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    .contenido-central ul {
+      list-style: "🌠 ";
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .contenido-central li {
+      margin-bottom: 8px;
+      font-size: 1.2em;
+    }
+
+    .botones-linea {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .boton-magico {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #1d1a40, #3f3fff);
       color: white;
       text-decoration: none;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(173, 26, 26, 0.5);
-      transition: transform 0.3s ease, background 0.3s ease;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
       font-size: 1.1em;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
       opacity: 0;
-      transform: translateY(20px);
-      animation: aparecer 0.6s ease forwards;
+      transform: translateY(30px);
+      animation: aparecerBoton 0.8s ease forwards;
     }
 
-    .menu a:nth-child(1) { animation-delay: 0.3s; }
-    .menu a:nth-child(2) { animation-delay: 0.6s; }
-    .menu a:nth-child(3) { animation-delay: 0.9s; }
-
-    .menu a:hover {
-      background: #3f3fff;
-      transform: scale(1.05);
+    .boton-magico:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
     }
+
+    .boton-magico:nth-child(1) { animation-delay: 0.3s; }
+    .boton-magico:nth-child(2) { animation-delay: 0.6s; }
+    .boton-magico:nth-child(3) { animation-delay: 0.9s; }
 
     #musica-btn {
       position: fixed;
@@ -115,7 +126,7 @@
       100% { background-position: 0% 50%; }
     }
 
-    @keyframes aparecer {
+    @keyframes aparecerBoton {
       to {
         opacity: 1;
         transform: translateY(0);
@@ -126,29 +137,30 @@
 <body>
   <canvas id="galaxia"></canvas>
 
-  <h1>🌌 Bienvenido al Proyecto Enfermedades 🌌</h1>
+  <h1>Bienvenido al Proyecto Enfermedades</h1>
   <img id="avatar" src="https://api.dicebear.com/7.x/adventurer/svg?seed=Jean" alt="Avatar animado">
-  <p>Este prototipo incluye:</p>
-  <ul>
-    <li>Gestión de enfermedades</li>
-    <li>Historial de accesos (login)</li>
-    <li>Usuarios del sistema</li>
-  </ul>
 
-  <div class="menu">
-    <a href="{{ route('enfermedades.index') }}">📋 Ver enfermedades</a>
-    <a href="{{ route('enfermedades.create') }}">➕ Registrar enfermedad</a>
-    <a href="{{ route('logins.index') }}">🕒 Historial de accesos</a>
+  <div class="contenido-central">
+    <p>Este prototipo incluye:</p>
+    <ul>
+      <li>Gestión de enfermedades</li>
+      <li>Historial de accesos (login)</li>
+      <li>Usuarios del sistema</li>
+    </ul>
   </div>
 
-  <!-- Música de fondo -->
+  <div class="botones-linea">
+    <a href="{{ route('enfermedades.index') }}" class="boton-magico">📋 Ver enfermedades</a>
+    <a href="{{ route('enfermedades.create') }}" class="boton-magico">➕ Registrar enfermedad</a>
+    <a href="{{ route('logins.index') }}" class="boton-magico">🕒 Historial de accesos</a>
+  </div>
+
   <audio id="musica" autoplay loop>
     <source src="musica/magia.mp3" type="audio/mpeg">
     Tu navegador no soporta audio HTML5.
   </audio>
   <button id="musica-btn" onclick="toggleMusica()">🎵</button>
 
-  <!-- Fondo galaxia animado + constelaciones -->
   <script>
     const canvas = document.getElementById('galaxia');
     const ctx = canvas.getContext('2d');
@@ -189,7 +201,6 @@
     }
     dibujarGalaxia();
 
-    // Constelaciones al hacer clic
     canvas.addEventListener('click', e => {
       const x = e.clientX;
       const y = e.clientY;
@@ -211,58 +222,22 @@
       nuevas.forEach(p => ctx.lineTo(p.x, p.y));
       ctx.stroke();
     });
-  </script>
 
-  <!-- Fondo dinámico según clima -->
-  <script>
-    navigator.geolocation.getCurrentPosition(pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=YOUR_API_KEY`)
-        .then(res => res.json())
-        .then(data => {
-          const clima = data.weather[0].main.toLowerCase();
-          if (clima.includes("rain")) document.body.style.background = "#1a1a40";
-          else if (clima.includes("clear")) document.body.style.background = "radial-gradient(circle, #000011, #220033)";
-          else if (clima.includes("snow")) document.body.style.background = "#333366";
-        });
-    });
-  </script>
-
-  <!-- Control de música -->
-  <script>
     const musica = document.getElementById('musica');
     function toggleMusica() {
-      if (musica.paused) {
-        musica.play();
-      } else {
-        musica.pause();
-      }
+      musica.paused ? musica.play() : musica.pause();
+    }
+
+    function cambiarAvatar() {
+      const estilos = ["adventurer", "pixel-art", "bottts", "notionists"];
+      const estilo = estilos[Math.floor(Math.random() * estilos.length)];
+      document.getElementById("avatar").src = `https://api.dicebear.com/7.x/${estilo}/svg?seed=Jean`;
+    }
+
+    function buscarEnfermedad() {
+      const nombre = document.getElementById('busqueda').value;
+      window.location.href = `/enfermedades?nombre=${encodeURIComponent(nombre)}`;
     }
   </script>
-  <input type="text" id="busqueda" placeholder="🔍 Buscar enfermedad..." />
-<button onclick="buscarEnfermedad()">Buscar</button>
-<script>
-function buscarEnfermedad() {
-  const nombre = document.getElementById('busqueda').value;
-  window.location.href = `/enfermedades?nombre=${encodeURIComponent(nombre)}`;
-}
-</script>
-<table>
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Tipo</th>
-      <th>Síntomas</th>
-      <th>Gravedad</th>
-      <th>Región</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Aquí van los registros -->
-  </tbody>
-</table>
 
-</body>
-</html>
+  <input type="text" id="busqueda"
